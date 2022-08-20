@@ -1,0 +1,25 @@
+{
+  "projectType": "library",
+  "sourceRoot": "libs/fe/ui/mouse-pointer/src",
+  "prefix": "noi",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/fe/ui/mouse-pointer"],
+      "options": {
+        "jestConfig": "libs/fe/ui/mouse-pointer/jest.config.ts",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/fe/ui/mouse-pointer/**/*.ts",
+          "libs/fe/ui/mouse-pointer/**/*.html"
+        ]
+      }
+    }
+  },
+  "tags": []
+}

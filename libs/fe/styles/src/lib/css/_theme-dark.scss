@@ -1,0 +1,17 @@
+@use 'color-palete' as cl ;
+[data-theme='dark'] {
+  --btn-alt: #{cl.$dark-jungle-green};
+  --btn: #{cl.$barbie-pink};
+  --btn-txt: #{cl.$white};
+  --btn-alt-txt: #{cl.$white};
+  --bg: #{cl.$gradient-bg};
+  // --bg-alt: #{cl.$light-blue};
+  // --txt-alt: #{cl.$dark-blue};
+  // --txt: #{cl.$light-blue};
+  // --success: #{cl.$green};
+  // --warning: #{cl.$brown-orange};
+  // --error: #{cl.$red};
+  // --border: #{cl.$medium-blue};
+  // --focus: #{cl.$brown-orange};
+  
+}

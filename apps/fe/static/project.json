@@ -1,0 +1,138 @@
+{
+  "projectType": "application",
+  "sourceRoot": "apps/fe/static/src",
+  "prefix": "personal",
+  "i18n": {
+    "sourceLocale": "en-US",
+    "locales": {
+      "en": "apps/fe/static/src/locale/messages.xlf",
+      "de": "apps/fe/static/src/locale/messages.de.xlf"
+    }
+  },
+  "targets": {
+    "build": {
+      "executor": "@angular-devkit/build-angular:browser",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/apps/fe/static",
+        "index": "apps/fe/static/src/index.html",
+        "main": "apps/fe/static/src/main.ts",
+        "polyfills": "apps/fe/static/src/polyfills.ts",
+        "tsConfig": "apps/fe/static/tsconfig.app.json",
+        "optimization": true,
+        "inlineStyleLanguage": "scss",
+        "i18nMissingTranslation": "error",
+        "localize": ["de", "en"],
+        "baseHref": "/",
+        "assets": ["apps/fe/static/src/assets"],
+        "styles": [
+          "apps/fe/static/src/styles.scss",
+          "libs/fe/styles/src/index.scss"
+        ],
+        "stylePreprocessorOptions": {
+          "includePaths": ["libs/fe/styles/src"]
+        },
+        "scripts": []
+      },
+      "configurations": {
+        "production": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "500kb",
+              "maximumError": "1mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "2kb",
+              "maximumError": "5kb"
+            }
+          ],
+          "fileReplacements": [
+            {
+              "replace": "apps/fe/static/src/environments/environment.ts",
+              "with": "apps/fe/static/src/environments/environment.prod.ts"
+            }
+          ],
+          "baseHref": "/",
+          "outputHashing": "all"
+        },
+        "development": {
+          "buildOptimizer": false,
+          "optimization": false,
+          "vendorChunk": true,
+          "extractLicenses": false,
+          "sourceMap": true,
+          "namedChunks": true
+        },
+        "de": {
+          "localize": ["de"],
+          "buildOptimizer": false,
+          "optimization": false,
+          "vendorChunk": true,
+          "extractLicenses": false,
+          "sourceMap": true,
+          "namedChunks": true
+        },
+        "en": {
+          "localize": ["en"],
+          "buildOptimizer": false,
+          "optimization": false,
+          "vendorChunk": true,
+          "extractLicenses": false,
+          "sourceMap": true,
+          "namedChunks": true
+        }
+      },
+      "defaultConfiguration": "production"
+    },
+    "serve": {
+      "executor": "@angular-devkit/build-angular:dev-server",
+      "options": {
+        "host": "0.0.0.0",
+        "port": 4000,
+        "disableHostCheck": true
+      },
+      "configurations": {
+        "production": {
+          "browserTarget": "fe-static:build:production"
+        },
+        "development": {
+          "browserTarget": "fe-static:build:development"
+        },
+        "de": {
+          "browserTarget": "fe-static:build:de"
+        },
+        "en": {
+          "browserTarget": "fe-static:build:en"
+        }
+      },
+      "defaultConfiguration": "development"
+    },
+    "extract-i18n": {
+      "executor": "@angular-devkit/build-angular:extract-i18n",
+      "options": {
+        "outputPath": "apps/fe/static/src/locale",
+        "browserTarget": "fe-static:build"
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "apps/fe/static/src/**/*.ts",
+          "apps/fe/static/src/**/*.html"
+        ]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/apps/fe/static"],
+      "options": {
+        "jestConfig": "apps/fe/static/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}

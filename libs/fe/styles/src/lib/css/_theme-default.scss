@@ -1,0 +1,8 @@
+@use 'color-palete' as cl ;
+[data-theme='default'] {
+  --btn-alt: #{cl.$dark-jungle-green};
+  --btn: #{cl.$barbie-pink};
+  --btn-txt: #{cl.$white};
+  --btn-alt-txt: #{cl.$white};
+  --bg: #{cl.$gradient-bg};
+}

@@ -1,0 +1,5 @@
+$index-app-root: 0;
+
+@mixin z-index($index: 0) {
+  z-index: $index;
+}

@@ -1,0 +1,42 @@
+@use "typography";
+
+*,
+*::after,
+*::before {
+  margin: 0;
+  padding: 0;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+html {
+  height: 100%;
+  height: -webkit-fill-available;
+  width: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 100vh;
+  /* mobile viewport bug fix */
+  min-height: -webkit-fill-available;
+  font-family: 'Hind', Arial, Helvetica, sans-serif;
+  /* Disable Selection of text in all elements */
+  *:not(input):not(textarea) {
+    @include typography.no-select;
+  }
+}
+
+.bg {
+  background: var(--bg);
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center center;
+}

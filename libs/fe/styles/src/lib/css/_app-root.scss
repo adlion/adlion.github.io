@@ -1,0 +1,12 @@
+//min supported width 300px
+@use 'z-index' as index;
+@use 'color-palete' as palete;
+.app-root {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  min-width: 300px;
+  height: 100%;
+  flex: 1 0 auto;
+  @include index.z-index(index.$index-app-root);
+}

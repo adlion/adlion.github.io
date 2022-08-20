@@ -1,0 +1,13 @@
+.cursor {
+  pointer-events: none;
+
+  &__ball {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+      circle {
+        fill: rgb(228, 87, 5);
+      }
+  }
+}

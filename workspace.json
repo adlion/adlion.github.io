@@ -1,0 +1,10 @@
+{
+  "$schema": "./node_modules/nx/schemas/workspace-schema.json",
+  "version": 2,
+  "projects": {
+    "fe-static": "apps/fe/static",
+    "fe-static-e2e": "apps/fe/static-e2e",
+    "fe-styles": "libs/fe/styles",
+    "fe-ui-mouse-pointer": "libs/fe/ui/mouse-pointer"
+  }
+}

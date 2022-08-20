@@ -1,0 +1,23 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "rootDir": ".",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "es2015",
+    "module": "esnext",
+    "lib": ["es2017", "dom"],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@noi/fe/ui/mouse-pointer": ["libs/fe/ui/mouse-pointer/src/index.ts"],
+      "@personal/fe/styles": ["libs/fe/styles/src/index.ts"]
+    }
+  },
+  "exclude": ["node_modules", "tmp"]
+}
