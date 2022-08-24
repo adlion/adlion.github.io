@@ -11,9 +11,10 @@ function echo_manual (){
     echo_green_title "102. Frontend Application"
     echo_green_title "103. FE Component in Project"
     echo_green_title "104. FE Component in Project with module"
-    echo_green_title "105. FE Service in Project"
-    echo_green_title "106. FE Directive in Project"
-    echo_green_title "107.  Library FE"
+    echo_green_title "105. FE Module in Project"
+    echo_green_title "106. FE Service in Project"
+    echo_green_title "107. FE Directive in Project"
+    echo_green_title "108.  Library FE"
 
     echo
     echo_green "Your option:"
@@ -76,6 +77,20 @@ function parsing_arguments (){
                 fi
             ;;
             105 )
+                echo_yellow "----------------------- FE Module in Project -----------------------"
+                read -p "Module name ? " module
+                if [[ -z $module ]]; then
+                    option_unknown
+                fi
+
+                read -p "Project name? " app_name
+                if [[ -n $app_name ]]; then
+                    nx g @nrwl/angular:module $module --project=$app_name 
+                else
+                    option_unknown
+                fi
+            ;;
+             106 )
                 echo_yellow "----------------------- FE Service in Project -----------------------"
                 read -p "Service name ? " service
                 if [[ -z $service ]]; then
@@ -89,7 +104,7 @@ function parsing_arguments (){
                     option_unknown
                 fi
             ;;
-            106 )
+            107 )
                 echo_yellow "----------------------- FE Directive in Project -----------------------"
                 read -p "Directive name ? " directive
                 if [[ -z $directive ]]; then
@@ -103,7 +118,7 @@ function parsing_arguments (){
                     option_unknown
                 fi
             ;;
-            107 )
+            108 )
 
                 echo_yellow "----------------------- Library FE -----------------------"
                 read -p "Project directory? " directory

@@ -2,11 +2,11 @@ import { AfterViewInit, Component } from '@angular/core';
 import gsap from 'gsap';
 
 @Component({
-  selector: 'personal-greeting-card-autumn',
-  templateUrl: './greeting-card-autumn.component.html',
-  styleUrls: ['./greeting-card-autumn.component.scss'],
+  selector: 'personal-v-greeting-card-autumn',
+  templateUrl: './v-greeting-card-autumn.component.html',
+  styleUrls: ['./v-greeting-card-autumn.component.scss'],
 })
-export class GreetingCardAutumnComponent implements AfterViewInit {
+export class VGreetingCardAutumnComponent implements AfterViewInit {
   backFallingLeaves = ['.brownLeaf', '.orangeLeaf', '.redLeaf'];
   txtLine1 = '.text-line-1';
   txtLine2 = '.text-line-2';

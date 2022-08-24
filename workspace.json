@@ -2,6 +2,7 @@
   "$schema": "./node_modules/nx/schemas/workspace-schema.json",
   "version": 2,
   "projects": {
+    "fe-simulation": "libs/fe/simulation",
     "fe-static": "apps/fe/static",
     "fe-static-e2e": "apps/fe/static-e2e",
     "fe-styles": "libs/fe/styles",

@@ -10,15 +10,22 @@ const routes: Routes = [
       ),
   },
   {
-    path: 'greeting-card-autumn',
+    path: 'greeting-card',
     loadChildren: () =>
-      import('./views/greeting-card-autumn/greeting-card-autumn.module').then(
-        (module) => module.GreetingCardAutumnModule
+      import('./views/v-greeting-cards/v-greeting-cards.module').then(
+        (module) => module.VGreetingCardsModule
+      ),
+  },
+  {
+    path: 'simulations',
+    loadChildren: () =>
+      import('./views/v-simulations/v-simulations.module').then(
+        (module) => module.VSimulationsModule
       ),
   },
   {
     path: '',
-    redirectTo: 'home',
+    redirectTo: 'simulations',
     pathMatch: 'full',
   },
 ];
