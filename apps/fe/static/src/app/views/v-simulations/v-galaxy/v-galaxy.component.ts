@@ -2,15 +2,12 @@ import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { GUI } from 'dat.gui';
 import {
   AdditiveBlending,
-  AmbientLight,
   BackSide,
   BufferAttribute,
   BufferGeometry,
   Color,
-  Fog,
   Mesh,
   Points,
-  PointsMaterial,
   ShaderMaterial,
   SphereBufferGeometry,
   sRGBEncoding,
@@ -29,7 +26,7 @@ varying vec3 vertexNormal;
 uniform vec3 color;
 
 void main(){
-    float intensity = pow(0.02 - dot(vertexNormal, vec3(0, 0, 1.0)), 2.0);
+    float intensity = pow(0.05 - dot(vertexNormal, vec3(0, 0, 1.0)), 2.0);
     gl_FragColor = vec4(color, 0.15) * intensity;
 }
 `;
@@ -44,14 +41,14 @@ void main(){
 
 `;
   geometry!: BufferGeometry;
-  material!: PointsMaterial;
+  material!: ShaderMaterial;
   stars: Points | null = null;
   diffussedLightMaterial!: ShaderMaterial;
   parameters = {
     count: 25000,
     size: 0.03,
     radius: 5,
-    branches: 7,
+    branches: 4,
     spin: 1,
     randomness: 0.8,
     randomnessPower: 8,
@@ -73,21 +70,18 @@ void main(){
     ];
     const assetsInstance = new CAssets(sources);
 
-    this.simulation = new Simulation(
-      this.canvas.nativeElement,
-      'onDemand'
-    );
+    this.simulation = new Simulation(this.canvas.nativeElement, {
+      autoUpdate: 'auto',
+      orbitControl: true,
+    });
     //Do not allow user to move galaxy outside camera max distance
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    this.simulation.cameraInstance.controls!.maxDistance = 25;
+    this.simulation.orbitContol!.controls.maxDistance = 25;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    this.simulation.cameraInstance.controls!.minDistance = 1;
+    this.simulation.orbitContol!.controls.minDistance = 1;
     this.simulation.cameraInstance.camera.position.y = 4;
     // this.simulation.cameraInstance.camera.position.x = 35;
     this.simulation.cameraInstance.camera.position.z = 8;
-
-    //Fog
-    this.simulation.sceneInstance.fog = new Fog(0xdfe9f3, 1000, 5000);
 
     //If assets are loaded render the scene
     assetsInstance.on('loaded', () => {
@@ -96,6 +90,9 @@ void main(){
       this.debugGalaxy();
       this.initDiffusedLight();
       this.initGalaxy();
+      this.simulation.onTick = ({ elapsedTime, delta }) => {
+        this.onTick(elapsedTime, delta);
+      };
     });
   }
 
@@ -117,7 +114,7 @@ void main(){
       this.diffussedLightMaterial
     );
 
-    this.simulation.sceneInstance.add(sphere);
+    this.simulation.scene.add(sphere);
   }
 
   debugGalaxy() {
@@ -187,13 +184,86 @@ void main(){
   }
 
   initGalaxy() {
-    this.material = new PointsMaterial({
-      map: this.texture,
-      size: this.parameters.size,
-      sizeAttenuation: true,
+    this.material = new ShaderMaterial({
+      // map: this.texture,
+      // size: this.parameters.size,
+      // sizeAttenuation: true,
       depthWrite: false,
       blending: AdditiveBlending,
       vertexColors: true,
+      vertexShader: `
+      uniform float uSize;
+      attribute float aScale;
+      attribute vec3 aRandomness;
+
+      varying vec3 vColor;
+      uniform float uTime;
+
+      void main()
+      {
+        /**
+         * Position
+         */
+        vec4 modelPosition = modelMatrix * vec4(position, 1.0);
+
+        float angle = atan(modelPosition.x, modelPosition.z);
+        float distanceToCenter = length(modelPosition.xyz);
+        float angleOffset = (1.0 / distanceToCenter) * uTime * 0.05;
+        angle += angleOffset;
+        modelPosition.x = cos(angle) * distanceToCenter;
+        modelPosition.z = sin(angle) * distanceToCenter;
+
+        //Randomness
+
+        modelPosition.xyz += aRandomness;
+
+        vec4 viewPosition = viewMatrix * modelPosition;
+        vec4 projectedPosition = projectionMatrix * viewPosition;
+        gl_Position = projectedPosition;
+        
+        /**
+         *  Size
+         */
+        gl_PointSize = uSize * aScale;
+        gl_PointSize *= (1.0/ -viewPosition.z);
+
+        //Color
+        vColor= color;
+
+      }
+      `,
+      fragmentShader: `
+      varying vec3 vColor;
+
+      void main()
+      {
+        //Disc Pattern
+       // float strength = distance(gl_PointCoord, vec2(0.5));
+       // strength = step(0.5, strength);
+       // strength = 1.0 - strength;
+
+        //Diffuse Pattern
+
+       // float strength = distance(gl_PointCoord, vec2(0.5));
+       // strength *= 2.0;
+       // strength = 1.0 - strength;
+
+       // Light point
+        float strength  = distance(gl_PointCoord , vec2(0.5));
+        strength = 1.0 - strength;
+        strength = pow(strength, 6.0);
+
+        // Color
+        vec3 color = mix(vec3(0.0),vColor, strength);
+        gl_FragColor = vec4(color, 1.0);
+      }
+      `,
+      uniforms: {
+        uTime: { value: 0 },
+        uSize: {
+          value: 15 * this.simulation.rendererInstance.renderer.getPixelRatio(),
+        },
+      },
     });
     this.generateGalaxy();
   }
@@ -209,11 +279,14 @@ void main(){
        */
       this.geometry?.dispose();
       // this.material?.dispose();
-      this.simulation.sceneInstance.remove(this.stars);
+      this.simulation.scene.remove(this.stars);
     }
 
     const positions = new Float32Array(this.parameters.count * 3);
     const colors = new Float32Array(this.parameters.count * 3);
+    const randomness = new Float32Array(this.parameters.count * 3);
+    const scales = new Float32Array(this.parameters.count * 1);
+
     const colorInside = new Color(this.parameters.centerColor);
     const colorOutside = new Color(this.parameters.edgeColor);
     for (let i = 0; i < this.parameters.count; i++) {
@@ -249,11 +322,15 @@ void main(){
           ? this.parameters.thickness
           : -this.parameters.thickness) *
         this.parameters.randomnessPower;
-      //Position stars using branches angle, distance and curbe
-      positions[i3] = Math.cos(branchAngle + spinAngle) * radius + randomX;
-      positions[i3 + 1] = randomY;
-      positions[i3 + 2] = Math.sin(branchAngle + spinAngle) * radius + randomZ;
 
+          //Position stars using branches angle, distance and curbe
+      positions[i3] = Math.cos(branchAngle + spinAngle) * radius ;
+      positions[i3 + 1] = 0;
+      positions[i3 + 2] = Math.sin(branchAngle + spinAngle) * radius ;
+      
+      randomness[i3] = randomX;
+      randomness[i3 + 1] = randomY;
+      randomness[i3 + 2] = randomZ;
       //Color
       //Make a clone of colorInside so it will not be changed when calculating colors in middle
       //someColor.lerp will change the colors in someColor
@@ -264,16 +341,27 @@ void main(){
       colors[i3] = mixedColor.r;
       colors[i3 + 1] = mixedColor.g;
       colors[i3 + 2] = mixedColor.b;
+
+      scales[i] = Math.random();
     }
 
     this.geometry = new BufferGeometry();
     this.geometry.setAttribute('position', new BufferAttribute(positions, 3));
     this.geometry.setAttribute('color', new BufferAttribute(colors, 3));
+    this.geometry.setAttribute(
+      'aRandomness',
+      new BufferAttribute(randomness, 3)
+    );
+    this.geometry.setAttribute('aScale', new BufferAttribute(scales, 1));
 
     this.stars = new Points(this.geometry, this.material);
     this.stars.updateMatrix();
-    this.simulation.sceneInstance.add(this.stars);
+    this.simulation.scene.add(this.stars);
     //Update renderer to detect changes
-    this.simulation.update();
+    this.simulation.onDemandUpdate();
+  }
+
+  onTick(elapsedTime: number, delta: number) {
+    this.material.uniforms['uTime'].value = elapsedTime;
   }
 }

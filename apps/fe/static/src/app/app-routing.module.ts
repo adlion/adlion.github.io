@@ -25,7 +25,7 @@ const routes: Routes = [
   },
   {
     path: '',
-    redirectTo: 'simulations',
+    redirectTo: 'home',
     pathMatch: 'full',
   },
 ];
