@@ -2,18 +2,20 @@ import { CubeTexture, CubeTextureLoader, Texture, TextureLoader } from 'three';
 import { ICResources } from '../models/simulation-models';
 import { GLTF, GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { CEventEmitter } from './CEventEmitter';
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
 
 export class CAssets extends CEventEmitter {
   private gltfLoader: GLTFLoader;
   private textureLoader: TextureLoader;
   private cubeTextLoader: CubeTextureLoader;
   private loaded = 0;
-  private total = 0;
   assets: Array<{ [name: string]: CubeTexture | GLTF | Texture }> = [];
   constructor(assets: ICResources) {
     super();
-    this.total = assets.length;
     this.gltfLoader = new GLTFLoader();
+    const dracoLoader = new DRACOLoader();
+    dracoLoader.setDecoderPath('/assets/model-loaders/draco/');
+    this.gltfLoader.setDRACOLoader(dracoLoader);
     this.textureLoader = new TextureLoader();
     this.cubeTextLoader = new CubeTextureLoader();
     this.fetchAssets(assets);
@@ -45,10 +47,8 @@ export class CAssets extends CEventEmitter {
   }
 
   private sourceLoaded(name: string, asset: CubeTexture | GLTF | Texture) {
-    this.loaded++;
     this.assets.push({ [name]: asset });
-    if (this.loaded === this.total) {
-      this.trigger('loaded', [this.loaded]);
-    }
+    this.trigger('loaded', [this.loaded]);
+    this.loaded++;
   }
 }

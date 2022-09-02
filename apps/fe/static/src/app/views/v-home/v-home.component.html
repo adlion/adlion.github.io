@@ -1,4 +1,42 @@
-<div class="canvas-wrp">
-    <canvas #canvas class="canvas"></canvas>
+<nav class="nav">
+  <div class="nav__item">split item</div>
+  <div class="nav__item">Title</div>
+  <div class="nav__group">
+    <div class="nav__item">help</div>
+    <div class="nav__item">toggle menu</div>
+    <div class="nav__item">nav buttons</div>
   </div>
-  
+</nav>
+<div class="terminal__wrp" tabindex="0">
+  <textarea #textAreaRef name="terminal-input"></textarea>
+  <div class="terminal">
+    <ng-container #terminalRef> </ng-container>
+  </div>
+</div>
+
+<ng-template #inputRowRef let-inputValue="inputValue" let-cursor="cursor">
+  <div class="terminal__row">
+    <ng-container *ngTemplateOutlet="rowHeaderRef"></ng-container>
+    <span>{{ inputValue }}</span>
+    <ng-container [ngTemplateOutlet]="cursor"></ng-container>
+  </div>
+</ng-template>
+
+<ng-template #cursorRef>
+  <span class="terminal__cursor blinking"></span>
+</ng-template>
+
+<ng-template #historyRef let-inputValue="inputValue">
+  <div class="terminal-output">
+    <div class="terminal-command">{{ inputValue }}</div>
+  </div>
+</ng-template>
+
+<ng-template #rowHeaderRef>
+  <span class="terminal__header">
+    <span class="terminal__header-username">{{ username }}</span
+    ><span class="terminal__header-host">@{{ host }}:</span
+    ><span class="terminal__header-tilde">~</span
+    ><span class="terminal__header-var">$</span>
+  </span>
+</ng-template>

@@ -1,67 +1,158 @@
 /* eslint-disable @typescript-eslint/member-ordering */
-import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
-import { CAssets, Simulation } from '@noi/fe/simulation';
 import {
-  AmbientLight,
-  DirectionalLight,
-  Mesh,
-  MeshStandardMaterial,
-  PlaneBufferGeometry,
-  SphereBufferGeometry,
-} from 'three';
-import * as CANON from 'cannon-es';
+  Component,
+  ElementRef,
+  EmbeddedViewRef,
+  OnInit,
+  Renderer2,
+  TemplateRef,
+  ViewChild,
+  ViewContainerRef,
+} from '@angular/core';
+import { commands as COMMANDS } from './terminal-commands';
+
 @Component({
   selector: 'personal-v-home',
   templateUrl: './v-home.component.html',
-  styleUrls: ['./v-home.component.scss'],
+  styleUrls: ['./common.component.scss', './v-home.component.scss'],
 })
-export class VHomeComponent implements AfterViewInit {
-  @ViewChild('canvas') canvas!: ElementRef<HTMLCanvasElement>;
-  simulation!: Simulation;
-  constructor() {}
-  ngAfterViewInit(): void {
-    this.simulation = new Simulation(this.canvas.nativeElement, {
-      autoUpdate: 'auto',
-      orbitControl: true,
-    });
-    this.simulation.cameraInstance.camera.position.set(-3, 3, 3);
-    this.simulation.onTick = ({ elapsedTime, delta }) => {
-      this.update(elapsedTime, delta);
-    };
+export class VHomeComponent implements OnInit {
+  @ViewChild('textAreaRef', { static: true })
+  textAreaRef!: ElementRef<HTMLTextAreaElement>;
 
-    const assetLoader = new CAssets([
-      { name: 'hamburger', type: 'gltfLoader', path: 'assets/hamburger.glb' },
-    ]);
+  @ViewChild('inputRowRef', { read: TemplateRef, static: true })
+  inputRowRef!: TemplateRef<any>;
 
-    console.log(assetLoader.assets)
-    assetLoader.on('loaded',(a)=>{
-      console.log(a)
-    })
-    this.init();
+  @ViewChild('terminalRef', { read: ViewContainerRef, static: true })
+  terminalRef!: ViewContainerRef;
+
+  @ViewChild('cursorRef', { read: TemplateRef, static: true })
+  cursorRef!: TemplateRef<any>;
+
+  @ViewChild('historyRef', { read: TemplateRef, static: true })
+  historyRef!: TemplateRef<any>;
+
+  constructor(private renderer: Renderer2) {}
+
+  host = location.hostname;
+  username = 'guest';
+  activeRow!: EmbeddedViewRef<any>;
+
+  history: Array<string> = [];
+  ngOnInit(): void {
+    this.consoleArt();
+    this.terminalRef.createComponent(COMMANDS[0].component);
+    this.newDefaultRow();
+    this.inputListen();
   }
-  mesh2!: Mesh;
-  init() {
-    const material = new MeshStandardMaterial({
-      metalness: 0.3,
-      roughness: 0.4,
-      envMapIntensity: 0.5,
-    });
-    this.mesh2 = new Mesh(new PlaneBufferGeometry(10, 10), material);
-    this.mesh2.rotation.x = -0.5 * Math.PI;
-    // this.simulation.scene.add(this.mesh2);
-
-    const directionaLight = new DirectionalLight('#ffffff', 3);
-
-    directionaLight.position.set(0.25, 3, -2.25);
-    this.simulation.scene.add(directionaLight);
-
-    const testSphere = new Mesh(
-      new SphereBufferGeometry(1, 32, 32),
-      new MeshStandardMaterial()
+  consoleArt() {
+    console.log(
+      `%c
+                               ▄▒▓▒▓▌░▀▄▄
+                             ▄░▄▄▓▓▀▀▒▒▀▓▓▄
+                             ▓▓▓▓▒░░░░░░░░░░▓▄
+                           ▐▓▒░░░░░░░░░░░░░░░▀▄
+                          ▐▓░░░░░░░░░░░░░░░░░░░░
+                          ▐▓░░░░░░░░░░░░░░░░░░░▓
+                          ▐▓░░░░░░░▀▀ ▀▀░▒▀▀▀▀▀▓▌
+        ▄▄▄                ▓▓░░▒▓        ░      ░░                ▄▄▄▄
+   ▄▓▀▀▀▓░░▓▄              ▐▓▒▓▓░  ▀     ▐░  ▄ ▀▐░              ▄▓▓▒▓▓▀▀▓▄
+ ▄▓▀▓▄░▒▓▀▀▀▀▓            ▐▓▓▓▓▓▓▄      ▄▒░░░░▓▓▌              ▓▀░░▀▓▓░▓▓▓▓▄
+▐▓░░░░▓▓░░░░░░▒           ▐▌▀▓▒░░░░░░▒▓▓▄▄▄▄▓▓▓▓▄             ▐▓░▓░░░▓▓░░░▒▓░
+▐▓▓▓░░▓▓▓▓▓░░░▓            ▄▓▓▓░░░▒▓▓▒░░░░░░░░░░▒▓▓░▄        ▄▓▒░░▓▓▒▀▓▒▒▓▀▓░
+ ▀▓▓▀▀░░░▓░░░░░▒▄          ▓▓▓▓░▒▓▓░░░░░░░░░░░░░░▒▓▒▓      ▄▓▒░░░░▀░░░░░░░▓
+   ▀▓░░░░░░░░░░░░▀▄         ▀▀▓░▓▓░░░░░░░░░░░░░░░▀▀▓░    ▄▓▒░░░░░░░░░░░▒▀
+     ▀▓░░░░░░░░░░░░░░▄        ▓░▓▓░░░░░░░░░░░░░▓▓▀▀   ▄▓▀░░░░░░░░░░░░░▀
+      ▀▓▒░░░░░░░░░░░░░░░▄     ▓▓░▓▓▒░░░░░░░░▒▓▓▀   ▄▓▀░░░░░░░░░░░░░░▓
+        ▀▓▒░░░░░░░░░░░░░░▓▓▓▄▄▓▒▒▒▒▓▓▓▓▓▓▓▓▀▓░ ▄▀▀▀▀▓░░░░░░░░░░░░░▒▀
+          ▀▓▒░░░░░░░░░░░░░▓░ ▀▓░░░    ░▀▓░░░▓░░▀░    ▀▀▒░░░░░░░░▒▀
+            ▀▓▒░░░░░░░░░░▓░    ▓░     ░  ▀▒░▒░  ░░      ▀░░░░░▒▀
+              ▀▓▒░░░░░░░▓       ░▄▄▄▄░     ▀  ░▄▐░       ▐░░▒▀
+                ▀▓▓░░░░▀         ░             ░░         ▐▌
+                  ▒▓▓▀░                         ░        ▄░
+                   ▀▓▄░                         ▐░   ▄▄░▀
+                      ▀▀▀▒▄░▄                    ▀▓░
+                        ▄▓░                        ▀░
+                       ▄░                            ▀░
+                     ▄▀░                               ░
+                    ▓░                                  ░
+                  ▐▓░                                   ▐▓
+                  ▓░            ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄         ▓
+    `,
+      ' font-size: 0.9em;overflow:hidden;'
     );
+    console.log(
+      '%cYou found the first clue of secret phrase! ',
+      'color: #33ff33; font-weight: bold; font-size: 24px;'
+    );
+    console.log(
+      '%cEncrypted secret: ' +
+        'bm9pbGRhLmNvbS9wb3J0YWw_cGFzc2NvZGU9IjAzMDA2MzkxNjZhIg',
+      'color: #FF44CC'
+    );
+  }
+  inputListen() {
+    //Manage non char
+    this.renderer.listen(
+      this.textAreaRef.nativeElement,
+      'keypress',
+      (event) => {
+        //enter
+        if (event.keyCode === 13) {
+          event.preventDefault();
+          this.activeRow.context['cursor'] = null;
+          this.executeCommand(event.target.value);
+          // this.terminalRef.element.nativeElement.scrollIntoView({ behavior: "smooth", block: "start" });
+          setTimeout(() => {
+            this.activeRow.detach();
+            event.target.value = '';
+            this.newDefaultRow();
+          }, 100);
+        }
+      }
+    );
+    //Manage Char
 
-    this.simulation.scene.add(testSphere);
+    this.renderer.listen(this.textAreaRef.nativeElement, 'input', (event) => {
+      this.activeRow.context['inputValue'] = event.target.value;
+    });
   }
 
-  update(elapsedTime: number, delta: number) {}
+  executeCommand(command: string) {
+    this.history.push(command);
+    if (command === 'clear') {
+      this.terminalRef.clear();
+      return;
+    }
+
+    if (command === 'history') {
+      this.history.forEach((item) => {
+        console.log(item);
+        this.activeRow = this.terminalRef.createEmbeddedView(this.historyRef, {
+          inputValue: item,
+        });
+        setTimeout(() => {
+          this.activeRow.detach();
+        }, 100);
+      });
+      return;
+    }
+
+    for (const _c of COMMANDS) {
+      if (_c.command === command) {
+        this.terminalRef.createComponent(_c.component);
+        return;
+      }
+
+      if (_c.command === 'not-found') {
+        this.terminalRef.createComponent(_c.component);
+      }
+    }
+  }
+  newDefaultRow() {
+    this.activeRow = this.terminalRef.createEmbeddedView(this.inputRowRef, {
+      inputValue: '',
+      cursor: this.cursorRef,
+    });
+  }
 }

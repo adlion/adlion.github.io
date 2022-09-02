@@ -1,0 +1,102 @@
+<div class="profile">
+  <div class="private">
+    <img src="assets/media/jpg/adlion.jpeg" alt="" />
+    <div class="private-section">
+      <div class="private-name">Adlion Myftarago</div>
+      <br />
+      <div class="private-profession">Developer</div>
+      <div class="private-location">Germany</div>
+    </div>
+  </div>
+  <div class="profile__data">
+    <br />
+    <div class="skills">
+      <div class="skills-label">Web Development</div>
+      <div class="skills-graph">
+        <noi-ring-chart
+          [ngStyle]="{
+            '--color-filled': color
+          }"
+          [settings]="{ value: 70, label: 'Angular' }"
+        ></noi-ring-chart>
+        <noi-ring-chart
+          [ngStyle]="{
+            '--color-filled': color
+          }"
+          [settings]="{ value: 85, label: 'Go' }"
+        ></noi-ring-chart>
+        <noi-ring-chart
+          [ngStyle]="{
+            '--color-filled': color
+          }"
+          [settings]="{ value: 75, label: 'Node.js (express)' }"
+        ></noi-ring-chart>
+      </div>
+    </div>
+    <br />
+    <div class="p-divider"></div>
+    <br />
+    <div class="skills">
+      <div class="skills-label">Database</div>
+      <div class="skills-graph">
+        <noi-ring-chart
+          [ngStyle]="{
+            '--color-filled': color
+          }"
+          [settings]="{ value: 85, label: 'Redis' }"
+        ></noi-ring-chart>
+        <noi-ring-chart
+          [ngStyle]="{
+            '--color-filled': color
+          }"
+          [settings]="{ value: 75, label: 'Mysql' }"
+        ></noi-ring-chart>
+      </div>
+    </div>
+    <br />
+    <div class="p-divider"></div>
+    <br />
+    <div class="skills">
+      <div class="skills-label">Others</div>
+      <div class="skills-graph">
+        <noi-ring-chart
+          [ngStyle]="{
+            '--color-filled': color
+          }"
+          [settings]="{ value: 85, label: 'Docker' }"
+        ></noi-ring-chart>
+        <noi-ring-chart
+          [ngStyle]="{
+            '--color-filled': color
+          }"
+          [settings]="{ value: 75, label: 'Linux (Ubuntu)' }"
+        ></noi-ring-chart>
+        <noi-ring-chart
+          [ngStyle]="{
+            '--color-filled': color
+          }"
+          [settings]="{ value: 68, label: 'CI/CD (Jenkins, Gitlab)' }"
+        ></noi-ring-chart>
+      </div>
+    </div>
+    <br />
+    <br />
+    <!-- <div class="projects">
+          <div class="project">
+              <a class="project-link" href="https://just-in-time-food.com"
+                >Just in Time - Food</a
+              >
+              <div class="project-description">
+                Just in Time - Food is a platform for gastronomy to help
+                restaurants, small businesses to implement technology in their
+                everyday life for better planning an managment. Our main goal
+                has been developing a platform where users can order by
+                providing the minimum required information to place an order and
+                on the other side restaurants can better plan their resources by
+                knowing in advance their future orders.
+            </div>
+          </div>
+        </div> -->
+    <div class="cv">Download CV</div>
+  </div>
+</div>

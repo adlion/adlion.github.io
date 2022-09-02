@@ -1,0 +1,39 @@
+.terminal__banner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 0.2em;
+  padding: 1.5rem 0;
+  &-art {
+    :nth-child(1),
+    :nth-child(2),
+    :nth-child(3),
+    :nth-child(4) {
+      color: red;
+      animation: anim_color 2s ease-in-out infinite alternate;
+    }
+  }
+}
+
+@media (min-width: 36rem) {
+  .terminal__banner {
+    flex-direction: row;
+    justify-content: space-evenly;
+    font-size: 0.6em;
+  }
+}
+
+@media (min-width: 60rem) {
+  .terminal__banner {
+    font-size: 0.9em;
+  }
+}
+
+@keyframes anim_color {
+  from {
+    color: inherit;
+  }
+  to {
+    color: red;
+  }
+}

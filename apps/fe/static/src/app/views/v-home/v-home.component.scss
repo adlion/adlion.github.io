@@ -1,19 +1,71 @@
+$background: #000000;
+$txt: green;
+$txt-error: red;
+$txt-warning: orange;
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&display=swap');
 :host {
   position: relative;
   display: flex;
   flex-direction: column;
   flex: 1 0 auto;
-}
+  color: $txt;
 
-.canvas-wrp {
-  position: fixed;
+  background-color: $background;
   width: 100%;
   height: 100%;
-  .canvas {
-    position: relative;
+}
+
+.nav {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.2em;
+  background-color: grey;
+  &__group {
+    display: flex;
+    justify-content: space-between;
+  }
+}
+
+.terminal__wrp {
+  position: relative;
+  flex: 1 0 auto;
+  width: 100%;
+  min-height: 100%;
+  padding: 5px;
+  overflow-x: hidden;
+  background-color: #000;
+  background-image: // skeuomorphism anyone?
+    radial-gradient(rgba(#fff, 0), rgba(#fff, 0)),
+    linear-gradient(to bottom, #000, rgb(6, 31, 1) 2px, #111 3px);
+  background-repeat: repeat-y;
+  background-position: center center;
+  background-size: cover, 100% 3px;
+  font-family: 'IBM Plex Mono', monospace;
+  textarea {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
-    background-color: black;
+    background-color: transparent;
     outline: none;
+    overflow: hidden;
+    opacity: 0;
+  }
+}
+
+
+.terminal {
+  &__header {
+    color: #ff8f00;
+    text-shadow: 0 0 5px #ff910085;
+    padding-right: 0.5ch;
+  }
+  &__cursor {
+    width: 1ch;
+    height: 2ch;
+    padding: 0 0.5ch;
+    background: #73abad;
+    animation: blink 1s linear infinite;
   }
 }

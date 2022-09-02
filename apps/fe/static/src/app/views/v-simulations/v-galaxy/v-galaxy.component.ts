@@ -57,19 +57,9 @@ void main(){
     edgeColor: '#0000ff',
   };
   gui = new GUI();
-  texture!: Texture;
   simulation!: Simulation;
 
   ngAfterViewInit(): void {
-    const sources: ICResources = [
-      {
-        name: 'star',
-        type: 'textureLaoder',
-        path: 'assets/textures/particles/1.png',
-      },
-    ];
-    const assetsInstance = new CAssets(sources);
-
     this.simulation = new Simulation(this.canvas.nativeElement, {
       autoUpdate: 'auto',
       orbitControl: true,
@@ -83,17 +73,12 @@ void main(){
     // this.simulation.cameraInstance.camera.position.x = 35;
     this.simulation.cameraInstance.camera.position.z = 8;
 
-    //If assets are loaded render the scene
-    assetsInstance.on('loaded', () => {
-      this.texture = assetsInstance.assets[0][sources[0].name] as Texture;
-      this.texture.encoding = sRGBEncoding;
-      this.debugGalaxy();
-      this.initDiffusedLight();
-      this.initGalaxy();
-      this.simulation.onTick = ({ elapsedTime, delta }) => {
-        this.onTick(elapsedTime, delta);
-      };
-    });
+    this.debugGalaxy();
+    this.initDiffusedLight();
+    this.initGalaxy();
+    this.simulation.onTick = ({ elapsedTime, delta }) => {
+      this.onTick(elapsedTime, delta);
+    };
   }
 
   initDiffusedLight() {
@@ -323,11 +308,11 @@ void main(){
           : -this.parameters.thickness) *
         this.parameters.randomnessPower;
 
-          //Position stars using branches angle, distance and curbe
-      positions[i3] = Math.cos(branchAngle + spinAngle) * radius ;
+      //Position stars using branches angle, distance and curbe
+      positions[i3] = Math.cos(branchAngle + spinAngle) * radius;
       positions[i3 + 1] = 0;
-      positions[i3 + 2] = Math.sin(branchAngle + spinAngle) * radius ;
-      
+      positions[i3 + 2] = Math.sin(branchAngle + spinAngle) * radius;
+
       randomness[i3] = randomX;
       randomness[i3 + 1] = randomY;
       randomness[i3 + 2] = randomZ;

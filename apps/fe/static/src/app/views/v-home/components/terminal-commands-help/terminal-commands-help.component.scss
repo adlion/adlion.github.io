@@ -1,0 +1,16 @@
+.help {
+  padding: 1em 2em;
+  line-height: 1.3em;
+  font-family: inherit;
+  &__row {
+    display: flex;
+  }
+  &__command {
+    display: inline-block;
+    overflow: hidden;
+    width: 6em;
+    min-width: 6em;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
