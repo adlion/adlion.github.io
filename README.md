@@ -1,6 +1,6 @@
 Project generated using NX https://nrwl.io/
 
-Frontend projects
+Frontend projects    
 Below port is being used by traefik on development
 
 
